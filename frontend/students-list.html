@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student List</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2b3e94;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #2b3e94;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th, table td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    table th {
+      background-color: #2b3e94;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Registered Students</h1>
+  </header>
+
+  <div class="container">
+    <h2>Student List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Roll Number</th>
+          <th>Course</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+      <tbody id="studentTableBody">
+        <!-- Dynamic data will go here -->
+      </tbody>
+    </table>
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      fetch('http://localhost:5000/api/students')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('studentTableBody');
+          if (data.length === 0) {
+            document.getElementById('errorMsg').textContent = 'No students found.';
+            return;
+          }
+          data.forEach(student => {
+            const row = `
+              <tr>
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.email}</td>
+                <td>${student.roll_number}</td>
+                <td>${student.course}</td>
+                <td>${student.department}</td>
+              </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('errorMsg').textContent = 'Failed to load student data.';
+        });
+    };
+  </script>
+</body>
+</html>

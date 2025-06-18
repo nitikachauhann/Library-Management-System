@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Librarian Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f5f7fb;
+    }
+
+    header {
+      background-color: #2b3e94;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 30px;
+      background: white;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2b3e94;
+    }
+
+    .nav-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .nav-buttons a, .nav-buttons button {
+      display: block;
+      padding: 16px;
+      background-color: #2b3e94;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-buttons a:hover, .nav-buttons button:hover {
+      background-color: #1d2e70;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Library Management - Dashboard</h1>
+  </header>
+
+  <div class="container">
+    <h2>Welcome, Librarian!</h2>
+    <div class="nav-buttons">
+      <a href="book.html">📘 View Books</a>
+      <a href="add-book.html">➕ Add Book</a>
+      <a href="issue-book.html">📤 Issue Book</a>
+      <a href="issued-books.html">📄 Issued Books</a>
+      <a href="return-book.html">📥 Return Book</a>
+      <a href="add-student.html">🎓 Add Student</a>
+      <a href="students-list.html">👨‍🎓 View Students</a>
+      <button onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Return Book</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2b3e94;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #2b3e94;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2b3e94;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #1e2f75;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📘 Return Book</h1>
+  </header>
+
+  <div class="container">
+    <h2>Return Issued Book</h2>
+    <form id="returnBookForm">
+      <input type="number" name="issue_id" placeholder="Issue Record ID" required />
+      <input type="date" name="actual_return_date" id="returnDate" required />
+      <button type="submit">Return Book</button>
+      <div id="msg"></div>
+    </form>
+  </div>
+
+  <script>
+    // Autofill today's date in the return date field
+    document.getElementById('returnDate').valueAsDate = new Date();
+
+    document.getElementById('returnBookForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      const msgBox = document.getElementById('msg');
+      const button = this.querySelector('button');
+      msgBox.innerHTML = '<p>⏳ Processing...</p>';
+      button.disabled = true;
+
+      fetch('http://localhost:5000/api/transactions/return', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          msgBox.innerHTML = `<p class="success">✅ Book returned. Fine: ₹${result.fine || 0}</p>`;
+          this.reset();
+          document.getElementById('returnDate').valueAsDate = new Date(); // Reset date to today
+        } else {
+          msgBox.innerHTML = '<p class="error">❌ ' + (result.message || 'Failed to return book.') + '</p>';
+        }
+      })
+      .catch(err => {
+        msgBox.innerHTML = '<p class="error">⚠️ Error returning book.</p>';
+        console.error(err);
+      })
+      .finally(() => {
+        button.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>

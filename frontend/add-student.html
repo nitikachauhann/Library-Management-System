@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Student</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2b3e94;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #2b3e94;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2b3e94;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #1e2f75;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎓 Add New Student</h1>
+  </header>
+
+  <div class="container">
+    <h2>Student Details</h2>
+    <form id="addStudentForm">
+      <input type="number" name="id" placeholder="Student ID" required />
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="text" name="roll_number" placeholder="Roll Number" required />
+      <input type="text" name="course" placeholder="Course" required />
+      <input type="text" name="department" placeholder="Department" required />
+      <button type="submit">Add Student</button>
+      <div id="msg"></div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('addStudentForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      fetch('http://localhost:5000/api/students/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          document.getElementById('msg').innerHTML = '<p class="success">✅ Student added successfully.</p>';
+          this.reset();
+        } else {
+          document.getElementById('msg').innerHTML = '<p class="error">❌ ' + (result.message || 'Failed to add student.') + '</p>';
+        }
+      })
+      .catch(err => {
+        document.getElementById('msg').innerHTML = '<p class="error">⚠️ Error occurred.</p>';
+        console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>
